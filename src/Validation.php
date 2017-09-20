@@ -2,8 +2,8 @@
 
 namespace Middlewares;
 
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -24,14 +24,14 @@ class Validation implements MiddlewareInterface
 
     public function process(
         ServerRequestInterface $request,
-        RequestHandlerInterface $handler
+        DelegateInterface $delegator
     ): ResponseInterface {
         $data = $request->getParsedBody();
         $this->validate($this->validators, $data);
 
         $request = $request->withAttribute($this->errorsAttribute, $this->getErrors());
         $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors());
-        return $handler->handle($request);
+        return $delegator->process($request);
     }
 
     private function validate(array $validators, $data)
