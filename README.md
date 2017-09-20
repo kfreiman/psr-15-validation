@@ -23,13 +23,16 @@ This package is installable and autoloadable via Composer as [kfreiman/psr-15-va
 composer require kfreiman/psr-15-validation
 ```
 
+For compatible with `http-interop/http-middleware` version less than `0.5` use versions tagged in 0.x
+```sh
+composer require kfreiman/psr-15-validation "^0.1"
+```
+
 ## Example
 
 ```php
 $dispatcher = new Dispatcher([
 	(new Middlewares\Validation())
-		->option1()
-		->option2($value)
 ]);
 
 $response = $dispatcher->dispatch(new ServerRequest());
