@@ -17,10 +17,10 @@ Description of the middleware
 
 ## Installation
 
-This package is installable and autoloadable via Composer as [middlewares/validation](https://packagist.org/packages/middlewares/validation).
+This package is installable and autoloadable via Composer as [kfreiman/psr-15-validation](https://packagist.org/packages/kfreiman/psr-15-validation).
 
 ```sh
-composer require middlewares/validation
+composer require kfreiman/psr-15-validation
 ```
 
 ## Example
