@@ -38,8 +38,6 @@ class Validation implements MiddlewareInterface
 
     protected function validate(array $rules, $data)
     {
-        // var_dump($rules);
-        // exit;
         foreach ($rules as $rule) {
             $attr = $rule[0];
             $assertion = $rule[1];
@@ -47,11 +45,12 @@ class Validation implements MiddlewareInterface
             $arg1 = $rule[2] ?? null;
             $arg2 = $rule[3] ?? null;
             $arg3 = $rule[4] ?? null;
+            $arg4 = $rule[5] ?? null;
 
             $value = $data[$attr] ?? null;
 
             try {
-                Assertion::$assertion($value, $arg1, $arg2, $arg3);
+                Assertion::$assertion($value, $arg1, $arg2, $arg3, $arg4);
             } catch (InvalidArgumentException $exception) {
                 $this->errors[$attr][] = $exception->getMessage();
             }
@@ -67,10 +66,4 @@ class Validation implements MiddlewareInterface
     {
         return !empty($this->errors);
     }
-
-
-    // public function FunctionName($value='')
-    // {
-    //     # code...
-    // }
 }
