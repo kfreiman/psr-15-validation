@@ -4,10 +4,10 @@ namespace Middlewares\Tests;
 
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
-use Middlewares\Validation;
+use Middlewares\QueryParamsValidation;
 use PHPUnit\Framework\TestCase;
 
-class ValidationTest extends TestCase
+class QueryParamsValidationTest extends TestCase
 {
     public function validatorsProvider()
     {
@@ -31,9 +31,9 @@ class ValidationTest extends TestCase
     public function testValidation(array $validators, array $data)
     {
         $request = Factory::createServerRequest();
-        $request = $request->withParsedBody($data);
+        $request = $request->withQueryParams($data);
 
-        $mw = new Validation($validators);
+        $mw = new QueryParamsValidation($validators);
 
         $response = Dispatcher::run([
                 $mw,
