@@ -16,8 +16,8 @@ class QueryParamsValidation extends Validation
         $data = $request->getQueryParams();
         $this->validate($this->rules, $data);
 
-        $request = $request->withAttribute($this->errorsAttribute, $this->getErrors());
-        $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors());
+        $request = $request->withAttribute($this->errorsAttribute, $this->getErrors($request));
+        $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors($request));
         return $delegator->process($request);
     }
 }

@@ -31,8 +31,8 @@ class Validation implements MiddlewareInterface
         $data = $request->getParsedBody();
         $this->validate($this->rules, $data);
 
-        $request = $request->withAttribute($this->errorsAttribute, $this->getErrors());
-        $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors());
+        $request = $request->withAttribute($this->errorsAttribute, $this->getErrors($request));
+        $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors($request));
         return $delegator->process($request);
     }
 
@@ -57,13 +57,14 @@ class Validation implements MiddlewareInterface
         }
     }
 
-    public function getErrors(): array
+    public function getErrors(ServerRequestInterface $request): array
     {
-        return $this->errors;
+        $errors = $request->getAttribute($this->errorsAttribute, []); // for multiple Validaion middlewares
+        return array_merge($this->errors, $errors);
     }
 
-    public function hasErrors(): bool
+    public function hasErrors(ServerRequestInterface $request): bool
     {
-        return !empty($this->errors);
+        return !empty($this->getErrors($request));
     }
 }
