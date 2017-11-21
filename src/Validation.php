@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Validation implements MiddlewareInterface
 {
-    protected $rules = [];
+    private $rules = [];
 
     protected $errors = [];
 
@@ -21,15 +21,14 @@ class Validation implements MiddlewareInterface
 
     public function __construct(array $rules)
     {
-        $this->rules = $rules;
+        $this->setRules($rules);
     }
 
     public function process(
         ServerRequestInterface $request,
         DelegateInterface $delegator
     ): ResponseInterface {
-        $data = $request->getParsedBody();
-        $this->validate($this->rules, $data);
+        $this->validate($this->getRules(), $request->getParsedBody());
 
         $request = $request->withAttribute($this->errorsAttribute, $this->getErrors($request));
         $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors($request));
@@ -66,5 +65,15 @@ class Validation implements MiddlewareInterface
     public function hasErrors(ServerRequestInterface $request): bool
     {
         return !empty($this->getErrors($request));
+    }
+
+    public function setRules(array $rules): void
+    {
+        $this->rules = $rules;
+    }
+
+    public function getRules(): array
+    {
+        return $this->rules;
     }
 }
