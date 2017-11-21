@@ -13,8 +13,7 @@ class QueryParamsValidation extends Validation
         ServerRequestInterface $request,
         DelegateInterface $delegator
     ): ResponseInterface {
-        $data = $request->getQueryParams();
-        $this->validate($this->rules, $data);
+        $this->validate($this->getRules(), $request->getQueryParams());
 
         $request = $request->withAttribute($this->errorsAttribute, $this->getErrors($request));
         $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors($request));
