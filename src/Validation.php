@@ -21,15 +21,14 @@ class Validation implements MiddlewareInterface
 
     public function __construct(array $rules)
     {
-        $this->rules = $rules;
+        $this->setRules($rules);
     }
 
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $data = $request->getParsedBody();
-        $this->validate($this->rules, $data);
+        $this->validate($this->getRules(), $request->getParsedBody());
 
         $request = $request->withAttribute($this->errorsAttribute, $this->getErrors());
         $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors());
@@ -65,5 +64,15 @@ class Validation implements MiddlewareInterface
     public function hasErrors(): bool
     {
         return !empty($this->errors);
+    }
+
+    public function setRules(array $rules): void
+    {
+        $this->rules = $rules;
+    }
+
+    public function getRules(): array
+    {
+        return $this->rules;
     }
 }
