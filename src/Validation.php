@@ -4,8 +4,8 @@ namespace Middlewares;
 
 use Assert\InvalidArgumentException;
 use Assert\Assertion;
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -26,13 +26,13 @@ class Validation implements MiddlewareInterface
 
     public function process(
         ServerRequestInterface $request,
-        RequestHandlerInterface $handler
+        DelegateInterface $handler
     ): ResponseInterface {
         $this->validate($this->getRules(), $request->getParsedBody());
 
         $request = $request->withAttribute($this->errorsAttribute, $this->getErrors());
         $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors());
-        return $handler->handle($request);
+        return $handler->process($request);
     }
 
     protected function validate(array $rules, $data)
