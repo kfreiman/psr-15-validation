@@ -35,17 +35,17 @@ class Validation implements MiddlewareInterface
             return $before;
         }
 
-        $this->validate($this->getRules(), $this->getData($request));
-        $request = $request->withAttribute($this->errorsAttribute, $this->getErrors());
-        $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors());
+        $this->validate($this->getRules(), $this->getData());
+        $this->setRequest($request->withAttribute($this->errorsAttribute, $this->getErrors()));
+        $this->setRequest($request->withAttribute($this->hasErrorsAttribute, $this->hasErrors()));
 
         if (!is_null($after = $this->afterValidation($request, $handler))) {
             return $after;
         }
-        return $handler->process($request);
+        return $handler->process($this->getRequest());
     }
 
-    protected function getData(ServerRequestInterface $request): array
+    protected function getData(): array
     {
         return $this->getRequest()->getParsedBody();
     }
