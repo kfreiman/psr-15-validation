@@ -28,11 +28,12 @@ class Validation implements MiddlewareInterface
         ServerRequestInterface $request,
         DelegateInterface $handler
     ): ResponseInterface {
+        $this->setRequest($request);
         if (!is_null($before = $this->beforeValidation($request, $handler))) {
             return $before;
         }
 
-        $this->validate($this->getRules(), $this->getData($request));
+        $this->validate($this->getRules(), $this->getData());
         $request = $request->withAttribute($this->errorsAttribute, $this->getErrors());
         $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors());
 
@@ -42,9 +43,19 @@ class Validation implements MiddlewareInterface
         return $handler->process($request);
     }
 
-    protected function getData(ServerRequestInterface $request)
+    protected function getData(): array
     {
-        return $request->getParsedBody();
+        return $this->getRequest()->getParsedBody();
+    }
+
+    public function getRequest(): ServerRequestInterface
+    {
+        return $this->request;
+    }
+
+    public function setRequest(ServerRequestInterface $request)
+    {
+        $this->request = $request;
     }
 
     protected function validate(array $rules, $data)
