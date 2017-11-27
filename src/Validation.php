@@ -36,13 +36,13 @@ class Validation implements MiddlewareInterface
         }
 
         $this->validate($this->getRules(), $this->getData());
-        $this->setRequest($request->withAttribute($this->errorsAttribute, $this->getErrors()));
-        $this->setRequest($request->withAttribute($this->hasErrorsAttribute, $this->hasErrors()));
+        $request = $request->withAttribute($this->errorsAttribute, $this->getErrors());
+        $request = $request->withAttribute($this->hasErrorsAttribute, $this->hasErrors());
 
         if (!is_null($after = $this->afterValidation($request, $handler))) {
             return $after;
         }
-        return $handler->process($this->getRequest());
+        return $handler->process($request);
     }
 
     protected function getData(): array
@@ -76,9 +76,14 @@ class Validation implements MiddlewareInterface
             try {
                 Assertion::$assertion($value, $arg1, $arg2, $arg3, $arg4);
             } catch (InvalidArgumentException $exception) {
-                $this->errors[$attr][] = $exception->getMessage();
+                $this->addError($attr, $exception->getMessage());
             }
         }
+    }
+
+    protected function addError(string $field, string $message)
+    {
+        $this->errors[$field][] = $message;
     }
 
     public function beforeValidation(
