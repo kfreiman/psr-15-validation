@@ -15,6 +15,8 @@ class Validation implements MiddlewareInterface
 
     protected $errors = [];
 
+    protected $request;
+
     protected $errorsAttribute = 'errors';
 
     protected $hasErrorsAttribute = 'has-errors';
